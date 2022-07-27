@@ -39,12 +39,12 @@ const useOrderbook = (orders, currentPrice, displayCount, type = "ask") => {
         })
       } else if (orders.length >= displayCount) {
         // Update (A.K.A. replace with new ones)
-        setState({ prevDict: state.dict })
         setState({
           parsedOrders: filteredOrders.map(([price, size]) => [
             parseFloat(price),
             parseInt(size)
           ]),
+          prevDict: state.dict,
           dict: (() => {
             const dict = {}
             filteredOrders.forEach(

@@ -31,6 +31,14 @@ const Asks = ({ asks, displayCount, currentPrice }) => {
     })
     .reverse()
 
+  const getSizeChangedAnimationType = (price, size) => {
+    if (!prevDict[price]) {
+      return "none"
+    }
+
+    return size > prevDict[price] ? "increment" : "decrement"
+  }
+
   return (
     <>
       {displayData.map(([price, size, total]) => (
@@ -39,11 +47,16 @@ const Asks = ({ asks, displayCount, currentPrice }) => {
         // it almost can be 100% sure that the key is going to be an unique one.
         // You can regard it as a simple hash function just for code interview purpose only.
         <Tr key={price + size + total} isAnimated={!prevDict[price]}>
-          <Td style={{ textAlign: "left", color: "#00b15d" }}>
+          <Td textAlign="left" color="#00b15d">
             {numeral(price).format("0,0.0")}
           </Td>
-          <Td style={{ textAlign: "right" }}>{numeral(size).format("0,0")}</Td>
-          <Td style={{ textAlign: "right" }}>{numeral(total).format("0,0")}</Td>
+          <Td
+            textAlign="right"
+            animationType={getSizeChangedAnimationType(price, size)}
+          >
+            {numeral(size).format("0,0")}
+          </Td>
+          <Td textAlign="right">{numeral(total).format("0,0")}</Td>
         </Tr>
       ))}
     </>
@@ -51,20 +64,45 @@ const Asks = ({ asks, displayCount, currentPrice }) => {
 }
 
 const BgAnimation = keyframes`
+  0% { background-color: rgb(0, 128, 0, 0.1); }
+  30% { background-color: rgb(0, 128, 0, 0.25); }
+  40% { background-color: rgb(0, 128, 0, 0.5)  }
+  100% { background-color: rgb(0, 128, 0, 0)  }
+`
 
- 0% { background-color: rgb(0, 128, 0, 0.1); }
- 30% { background-color: rgb(0, 128, 0, 0.25); }
- 40% { background-color: rgb(0, 128, 0, 0.5)  }
- 100% { background-color: rgb(0, 128, 0, 0)  }`
+const DecrementAnimation = keyframes`
+  0% { background-color: rgb(255, 0, 0, 0.1); }
+  30% { background-color: rgb(255, 0, 0, 0.25); }
+  40% { background-color: rgb(255, 0, 0, 0.5)  }
+  100% { background-color: rgb(255, 0, 0, 0)  }
+`
 
 const Tr = styled.tr`
   animation-name: ${({ isAnimated }) => (isAnimated ? BgAnimation : "none")};
   animation-duration: 0.5s;
+
+  cursor: pointer;
+
+  &:hover {
+    background-color: #1e3059;
+  }
 `
 
 const Td = styled.td`
   ${color}
   ${typography}
+
+  animation-name: ${({ animationType }) => {
+    switch (animationType) {
+      case "increment":
+        return BgAnimation
+      case "decrement":
+        return DecrementAnimation
+      default:
+        return "none"
+    }
+  }};
+  animation-duration: 0.5s;
 `
 
 export default Asks
