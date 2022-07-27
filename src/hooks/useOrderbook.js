@@ -3,7 +3,7 @@ import { useReducer, useEffect, useMemo } from "react"
 const useOrderbook = (orders, currentPrice, displayCount, type = "ask") => {
   const [state, setState] = useReducer(
     (state, newState) => ({ ...state, ...newState }),
-    { parsedOrders: [], dict: {} }
+    { parsedOrders: [], dict: {}, prevDict: {} }
   )
 
   // Filter data that doesn't need to show
@@ -28,42 +28,43 @@ const useOrderbook = (orders, currentPrice, displayCount, type = "ask") => {
             parseFloat(price),
             parseInt(size)
           ]),
-          dict: () => {
+          dict: (() => {
             const dict = {}
             filteredOrders.forEach(
               ([price, size]) => (dict[parseFloat(price)] = parseInt(size))
             )
 
             return dict
-          }
+          })()
         })
       } else if (orders.length >= displayCount) {
         // Update (A.K.A. replace with new ones)
+        setState({ prevDict: state.dict })
         setState({
           parsedOrders: filteredOrders.map(([price, size]) => [
             parseFloat(price),
             parseInt(size)
           ]),
-          dict: () => {
+          dict: (() => {
             const dict = {}
             filteredOrders.forEach(
               ([price, size]) => (dict[parseFloat(price)] = parseInt(size))
             )
 
             return dict
-          }
+          })()
         })
       } else if (orders.length < displayCount) {
         // Compare with existing data
         setState({
-          dict: () => {
-            const dict = { ...state.dict }
+          prevDict: (() => {
+            const dict = { ...state.prev }
             filteredOrders.forEach(
               ([price, size]) => (dict[price] = parseInt(size))
             )
 
             return dict
-          }
+          })()
         })
       }
     }
