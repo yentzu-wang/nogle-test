@@ -2,37 +2,38 @@ import { useState, useEffect } from "react"
 import useWebSocket from "react-use-websocket"
 
 const useFeed = () => {
-  const target = "update:BTCPFC"
-  const targetForLastPrice = "tradeHistoryApi:BTCPFC"
-  const { sendMessage, lastMessage } = useWebSocket(
-    "wss://ws.btse.com/ws/oss/futures"
-  )
-  const [currentQuote, setCurrentQuote] = useState({})
+  const OrdersTopic = "update:BTCPFC"
+  const QuoteTopic = "tradeHistoryApi:BTCPFC"
 
-  const {
-    sendMessage: sendMessageToLastPriceWS,
-    lastMessage: lastMessageLastPriceWS
-  } = useWebSocket("wss://ws.btse.com/ws/futures")
+  const { sendMessage: sendMessageToOrders, lastMessage: ordersLastMessage } =
+    useWebSocket("wss://ws.btse.com/ws/oss/futures")
+  const { sendMessage: sendMessageToQuote, lastMessage: quoteLastMessage } =
+    useWebSocket("wss://ws.btse.com/ws/futures")
 
   const [asks, setAsks] = useState([])
   const [bids, setBids] = useState([])
+  const [currentQuote, setCurrentQuote] = useState({})
 
+  // Initialize subscription
   useEffect(() => {
-    sendMessage(JSON.stringify({ op: "subscribe", args: [target] }))
-    sendMessageToLastPriceWS(
+    sendMessageToOrders(
+      JSON.stringify({ op: "subscribe", args: [OrdersTopic] })
+    )
+    sendMessageToQuote(
       JSON.stringify({
         op: "subscribe",
-        args: [targetForLastPrice]
+        args: [QuoteTopic]
       })
     )
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
+  // Update orderbook data
   useEffect(() => {
-    if (lastMessage) {
-      const message = JSON.parse(lastMessage.data)
+    if (ordersLastMessage) {
+      const message = JSON.parse(ordersLastMessage.data)
 
-      if (message.topic === target) {
+      if (message.topic === OrdersTopic) {
         const {
           data: { asks, bids }
         } = message
@@ -46,11 +47,12 @@ const useFeed = () => {
         }
       }
     }
-  }, [lastMessage])
+  }, [ordersLastMessage])
 
+  // Update quote data
   useEffect(() => {
-    if (lastMessageLastPriceWS) {
-      const data = JSON.parse(lastMessageLastPriceWS.data).data
+    if (quoteLastMessage) {
+      const data = JSON.parse(quoteLastMessage.data).data
 
       if (data?.length > 0) {
         const { side, price } = data[0]
@@ -58,7 +60,7 @@ const useFeed = () => {
         setCurrentQuote({ side, price })
       }
     }
-  }, [lastMessageLastPriceWS])
+  }, [quoteLastMessage])
 
   return { asks, bids, currentQuote }
 }

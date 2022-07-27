@@ -6,7 +6,7 @@ const useOrderbook = (orders, currentPrice, displayCount, type = "ask") => {
     { parsedOrders: [], dict: {} }
   )
 
-  // filter data which doesn't need to show
+  // Filter data that doesn't need to show
   const filteredOrders = useMemo(
     () =>
       orders.filter(([price]) =>
@@ -18,50 +18,56 @@ const useOrderbook = (orders, currentPrice, displayCount, type = "ask") => {
   )
 
   useEffect(() => {
-    // initialize
-    if (filteredOrders.length > 0 && state.parsedOrders.length === 0) {
-      setState({
-        parsedOrders: filteredOrders.map(([price, size]) => [
-          parseFloat(price),
-          parseInt(size)
-        ]),
-        dict: () => {
-          const dict = {}
-          filteredOrders.forEach(
-            ([price, size]) => (dict[parseFloat(price)] = parseInt(size))
-          )
+    // Cannot use early return here because hooks return a cleanup function,
+    // so bare with nested if statement
+    if (filteredOrders.length > 0) {
+      // initialization
+      if (state.parsedOrders.length === 0) {
+        setState({
+          parsedOrders: filteredOrders.map(([price, size]) => [
+            parseFloat(price),
+            parseInt(size)
+          ]),
+          dict: () => {
+            const dict = {}
+            filteredOrders.forEach(
+              ([price, size]) => (dict[parseFloat(price)] = parseInt(size))
+            )
 
-          return dict
-        }
-      })
-    } else if (filteredOrders.length > 0 && orders.length >= displayCount) {
-      // update
-      setState({
-        parsedOrders: filteredOrders.map(([price, size]) => [
-          parseFloat(price),
-          parseInt(size)
-        ]),
-        dict: () => {
-          const dict = {}
-          filteredOrders.forEach(
-            ([price, size]) => (dict[parseFloat(price)] = parseInt(size))
-          )
-          return dict
-        }
-      })
-    } else if (filteredOrders.length > 0 && orders.length < displayCount) {
-      // compare
-      setState({
-        dict: () => {
-          const dict = { ...state.dict }
-          filteredOrders.forEach(
-            ([price, size]) => (dict[price] = parseInt(size))
-          )
+            return dict
+          }
+        })
+      } else if (orders.length >= displayCount) {
+        // Update (A.K.A. replace with new ones)
+        setState({
+          parsedOrders: filteredOrders.map(([price, size]) => [
+            parseFloat(price),
+            parseInt(size)
+          ]),
+          dict: () => {
+            const dict = {}
+            filteredOrders.forEach(
+              ([price, size]) => (dict[parseFloat(price)] = parseInt(size))
+            )
 
-          return dict
-        }
-      })
+            return dict
+          }
+        })
+      } else if (orders.length < displayCount) {
+        // Compare with existing data
+        setState({
+          dict: () => {
+            const dict = { ...state.dict }
+            filteredOrders.forEach(
+              ([price, size]) => (dict[price] = parseInt(size))
+            )
+
+            return dict
+          }
+        })
+      }
     }
+
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [orders, displayCount, filteredOrders])
 
