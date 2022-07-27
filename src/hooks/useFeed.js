@@ -57,7 +57,11 @@ const useFeed = () => {
       if (data?.length > 0) {
         const { side, price } = data[0]
 
-        setCurrentQuote({ side, price })
+        setCurrentQuote({
+          side,
+          price,
+          timestamp: quoteLastMessage.timeStamp
+        })
       }
     }
   }, [quoteLastMessage])

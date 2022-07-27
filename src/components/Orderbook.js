@@ -2,6 +2,7 @@ import React from "react"
 import styled from "styled-components"
 import Asks from "./Asks"
 import Bids from "./Bids"
+import Quote from "./Quote"
 import useFeed from "../hooks/useFeed"
 
 const Orderbook = () => {
@@ -25,12 +26,7 @@ const Orderbook = () => {
             currentPrice={currentQuote?.price}
             displayCount={displayCount}
           />
-
-          <tr>
-            <td colSpan={3} style={{ textAlign: "center" }}>
-              {currentQuote?.price}
-            </td>
-          </tr>
+          <Quote currentQuote={currentQuote} />
           <Bids
             bids={bids}
             currentPrice={currentQuote?.price}
