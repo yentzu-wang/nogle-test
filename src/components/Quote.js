@@ -1,15 +1,20 @@
 import React, { useState, useEffect } from "react"
 import styled from "styled-components"
+import numeral from "numeral"
 import { ReactComponent as Icon } from "../assets/arrow.svg"
 
 const Quote = ({ currentQuote: { price, timestamp } }) => {
   const compare = useColor(price, timestamp)
 
+  if (!price) {
+    return null
+  }
+
   return (
     <tr>
       <Td colSpan={3} compare={compare}>
         <Div compare={compare}>
-          {price}
+          {numeral(price).format("0,0.0")}
           {compare !== "=" ? (
             <StyledIcon compare={compare} />
           ) : (

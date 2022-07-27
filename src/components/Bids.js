@@ -1,4 +1,5 @@
 import React from "react"
+import numeral from "numeral"
 import useOrderbook from "../hooks/useOrderbook"
 
 const Bids = ({ bids, displayCount, currentPrice }) => {
@@ -30,9 +31,11 @@ const Bids = ({ bids, displayCount, currentPrice }) => {
     <>
       {displayData.map(([price, size, total], index) => (
         <tr key={index}>
-          <td style={{ textAlign: "left" }}>{price}</td>
-          <td style={{ textAlign: "right" }}>{size}</td>
-          <td style={{ textAlign: "right" }}>{total}</td>
+          <td style={{ textAlign: "left" }}>
+            {numeral(price).format("0,0.0")}
+          </td>
+          <td style={{ textAlign: "right" }}>{numeral(size).format("0,0")}</td>
+          <td style={{ textAlign: "right" }}>{numeral(total).format("0,0")}</td>
         </tr>
       ))}
     </>
