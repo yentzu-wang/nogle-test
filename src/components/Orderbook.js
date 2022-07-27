@@ -2,9 +2,11 @@ import React from "react"
 import styled from "styled-components"
 import Asks from "./Asks"
 import Bids from "./Bids"
+import useFeed from "../hooks/useFeed"
 
-const Orderbook = ({ asks, bids, currentQuote, displayCount }) => {
-  // console.log(currentQuote)
+const Orderbook = () => {
+  const displayCount = 8
+  const { asks, bids, currentQuote } = useFeed()
 
   return (
     <Wrapper>
