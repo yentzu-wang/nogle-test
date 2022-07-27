@@ -15,7 +15,7 @@ const Orderbook = () => {
       <Table>
         <Thead>
           <tr>
-            <th style={{ textAlign: "left" }}>Price(USD)</th>
+            <th style={{ textAlign: "left" }}>Price (USD)</th>
             <th style={{ textAlign: "right" }}>Size</th>
             <th style={{ textAlign: "right" }}>Total</th>
           </tr>

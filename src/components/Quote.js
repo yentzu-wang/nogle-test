@@ -18,7 +18,7 @@ const Quote = ({ currentQuote: { price, timestamp } }) => {
           {compare !== "=" ? (
             <StyledIcon compare={compare} />
           ) : (
-            <div style={{ width: 20 }} />
+            <div style={{ width: 24, height: 12 }} />
           )}
         </Div>
       </Td>
@@ -69,6 +69,7 @@ const Td = styled.td`
 
 const Div = styled.div`
   padding: 4px;
+  height: 28px;
 
   display: flex;
   flex-direction: row;
