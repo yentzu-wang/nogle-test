@@ -5,7 +5,7 @@ import numeral from "numeral"
 import useOrderbook from "../hooks/useOrderbook"
 
 const Bids = ({ bids, displayCount, currentPrice }) => {
-  const { parsedOrders, prevDict } = useOrderbook(
+  const { parsedOrders, prevDict, dict } = useOrderbook(
     bids,
     currentPrice,
     displayCount,
@@ -18,7 +18,7 @@ const Bids = ({ bids, displayCount, currentPrice }) => {
       if (!prevDict[bid.price]) {
         return bid
       } else {
-        return [bid.price, prevDict[bid.price]]
+        return [bid.price, dict[bid.price]]
       }
     })
     .filter(([, size]) => size !== 0)
