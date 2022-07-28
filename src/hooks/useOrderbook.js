@@ -51,7 +51,7 @@ const useOrderbook = (orders, currentPrice, displayCount, type = "ask") => {
               ([price, size]) => (dict[parseFloat(price)] = parseInt(size))
             )
 
-            return dict
+            return { ...state.dict, ...dict }
           })()
         })
       } else if (orders.length < displayCount) {
