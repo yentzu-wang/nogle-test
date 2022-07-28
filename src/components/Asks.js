@@ -5,7 +5,7 @@ import numeral from "numeral"
 import useOrderbook from "../hooks/useOrderbook"
 
 const Asks = ({ asks, displayCount, currentPrice }) => {
-  const { parsedOrders, prevDict, dict } = useOrderbook(
+  const { parsedOrders, prevDict } = useOrderbook(
     asks,
     currentPrice,
     displayCount,
@@ -14,13 +14,6 @@ const Asks = ({ asks, displayCount, currentPrice }) => {
   let count = 0
 
   const displayData = parsedOrders
-    .map(ask => {
-      if (!prevDict[ask.price]) {
-        return ask
-      } else {
-        return [ask.price, dict[ask.price]]
-      }
-    })
     .filter(([, size]) => size !== 0)
     .slice(displayCount * -1)
     .reverse()

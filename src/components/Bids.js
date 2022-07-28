@@ -5,7 +5,7 @@ import numeral from "numeral"
 import useOrderbook from "../hooks/useOrderbook"
 
 const Bids = ({ bids, displayCount, currentPrice }) => {
-  const { parsedOrders, prevDict, dict } = useOrderbook(
+  const { parsedOrders, prevDict } = useOrderbook(
     bids,
     currentPrice,
     displayCount,
@@ -14,13 +14,6 @@ const Bids = ({ bids, displayCount, currentPrice }) => {
   let count = 0
 
   const displayData = parsedOrders
-    .map(bid => {
-      if (!prevDict[bid.price]) {
-        return bid
-      } else {
-        return [bid.price, dict[bid.price]]
-      }
-    })
     .filter(([, size]) => size !== 0)
     .slice(0, displayCount)
     .map(([price, size]) => {
