@@ -42,7 +42,7 @@ const useFeed = () => {
           setAsks(asks)
         }
 
-        if (bids.length >= 0) {
+        if (bids.length > 0) {
           setBids(bids)
         }
       }
