@@ -22,7 +22,7 @@ const Bids = ({ bids, displayCount, currentPrice }) => {
       }
     })
     .filter(([, size]) => size !== 0)
-    .slice(0, 8)
+    .slice(0, displayCount)
     .map(([price, size]) => {
       count += size
 

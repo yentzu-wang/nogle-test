@@ -22,7 +22,7 @@ const Asks = ({ asks, displayCount, currentPrice }) => {
       }
     })
     .filter(([, size]) => size !== 0)
-    .slice(-8)
+    .slice(displayCount * -1)
     .reverse()
     .map(([price, size]) => {
       count += size
